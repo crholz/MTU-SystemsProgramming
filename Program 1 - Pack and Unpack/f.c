@@ -82,31 +82,90 @@ void * f (int code, void * mem, void * data)
                 int * destination = (int *) charLoc;
                 *destination = setter;
                 printf("Wrote %d to memory.\n", setter);
-                *currentAdd = *currentAdd + 5;
+                *currentAdd = *currentAdd + 4;
             }
             break;
 
         /*
-         *
+         * Void * argument points to character string.
          */
         case 4:
             if (mem)
             {
+                // Get the string value of the data pointer
+                char * cPoint;
+                cPoint = data;
 
+                // Find Current location of the string
+                short *currentAdd;
+                short memLoc;
+
+                currentAdd = mem;
+                memLoc = *currentAdd;
+
+                // Set identifier
+                char identifier = code;
+                char *charLoc = (char *) currentAdd + (char) memLoc;
+                *charLoc = identifier;
+                *currentAdd = *currentAdd + 1;
+                charLoc = charLoc + 1;
+
+                int i = 0;
+                while (cPoint[i] != 0)
+                {
+                    *charLoc = cPoint[i];
+                    charLoc = charLoc + (char) 1;
+                    *currentAdd = *currentAdd + 1;
+                    printf("%c", cPoint[i]);
+                    i = i + 1;
+                }
+
+                // Add a 0 at the end of the string
+                *charLoc = (int) 0;
+                *currentAdd = *currentAdd + 1;
+                printf(" wrote to memory.\n");
             }
             break;
 
+        /*
+         * Void * argument points to a float data value.
+         */
         case 5:
             if (mem)
             {
+                // Get the float value of the data pointer
+                float * fPoint;
+                fPoint = data;
+                float setter = *fPoint;
 
+                // Find Current location of the string
+                short *currentAdd;
+                short memLoc;
+
+                currentAdd = mem;
+                memLoc = *currentAdd;
+
+                // Set identifier
+                char identifier = code;
+                char *charLoc = (char *) currentAdd + (char) memLoc;
+                *charLoc = identifier;
+                charLoc = charLoc + 1;
+
+                // Set the integer
+                float * destination = (float *) charLoc;
+                *destination = setter;
+                printf("Wrote %f to memory.\n", setter);
+                *currentAdd = *currentAdd + 4;
             }
             break;
 
+        /*
+         * Print the accumulated values.
+         */
         case 6:
             if (mem)
             {
-
+                
             }
             break;
     }
