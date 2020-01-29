@@ -52,7 +52,6 @@ void * f (int code, void * mem, void * data)
         case 2:
             if (mem)
             {
-                printf("\n");
                 free(mem);
             } 
             break;
@@ -84,8 +83,7 @@ void * f (int code, void * mem, void * data)
                 // Set the integer
                 int * destination = (int *) charLoc;
                 *destination = setter;
-                printf("Wrote %d to memory.\n", setter);
-                *currentAdd = *currentAdd + 4;
+                *currentAdd = *currentAdd + 5;
             }
             break;
 
@@ -114,19 +112,19 @@ void * f (int code, void * mem, void * data)
                 charLoc = charLoc + 1;
 
                 int i = 0;
+
+                // Print each character
                 while (cPoint[i] != 0)
                 {
                     *charLoc = cPoint[i];
                     charLoc = charLoc + (char) 1;
                     *currentAdd = *currentAdd + 1;
-                    printf("%c", cPoint[i]);
                     i = i + 1;
                 }
 
                 // Add a 0 at the end of the string
                 *charLoc = (int) 0;
                 *currentAdd = *currentAdd + 1;
-                printf(" wrote to memory.\n");
             }
             break;
 
@@ -157,8 +155,7 @@ void * f (int code, void * mem, void * data)
                 // Set the integer
                 float * destination = (float *) charLoc;
                 *destination = setter;
-                printf("Wrote %f to memory.\n", setter);
-                *currentAdd = *currentAdd + 4;
+                *currentAdd = *currentAdd + 5;
             }
             break;
 
@@ -218,7 +215,7 @@ void * f (int code, void * mem, void * data)
                             float * fAddress;
                             fAddress = mem + (char) i;
                             float containedFloat = *fAddress;
-                            printf("%f", containedFloat);
+                            printf("%.1f", containedFloat);
                             i = i + 4;
                             break;
                     }

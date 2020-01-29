@@ -26,13 +26,13 @@ int main()
     m = f (F_first, 0, (void *)200);           /* we really don't know how much it will take */
     m = f (F_data_char, m,  (void *)"System programming class has ");
 
-    f_a = 69.7;
+    f_a = 79.7;
     m = f (F_data_float,  m,  (void *)fp);
     m = f (F_data_char, m,  (void *)"registered ");
     m = f (F_data_char, m,  (void *)"students in a ");
     m = f (F_data_char, m,  (void *)"classroom of ");
 
-    i_a = 70;
+    i_a = 90;
     m = f (F_data_int,  m,  (void *)ip);
     m = f (F_data_char, m,  (void *)"\n");
 
