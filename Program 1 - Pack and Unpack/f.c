@@ -165,7 +165,55 @@ void * f (int code, void * mem, void * data)
         case 6:
             if (mem)
             {
-                
+                // Find Current location of the string
+                short *currentAdd;
+                short memLoc;
+
+                currentAdd = mem;
+                memLoc = *currentAdd;
+                int i = 2;
+
+                while (i < memLoc)
+                {
+                    // Find the first character code
+                    char * findCode = mem + i;
+                    char decoded = *findCode;
+                    i = i + 1;
+
+                    // Print statement for each datatype
+                    switch (decoded)
+                    {
+                        // Int Print
+                        case 3:
+                            (int *) intAddress = mem + (char) i
+                            int containedInt - *intAddress;
+                            printf("%d", containedInt);
+                            i = i + 4
+                            break;
+
+                        // String Print
+                        case 4:
+                            (char *) charAddress;
+                            charAddress = mem + (char) i;
+                            char containedChar = *charAddress;
+                            while (containedChar != 0)
+                            {
+                                printf("%c", containedChar);
+                                i = i + 1;
+                                charAddress = mem + (char) i;
+                            }
+                            i = i + 1;
+                            break;
+
+                        // Float Print
+                        case 5:
+                            (float *) fAddress = mem + (char) i
+                            float containedFloat - *fAddress;
+                            printf("%f", containedFloat);
+                            i = i + 4
+                            break;
+                    }
+                }
             }
             break;
     }
