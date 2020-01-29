@@ -12,7 +12,7 @@
 void * f (int code, void * mem, void * data)
 {
     long long int z_data = (long long int)data;
-    printf("%d : %p %p %lld\n",code, mem, data, z_data);
+    //printf("%d : %p %p %lld\n",code, mem, data, z_data);
 
 
     // Create a switch statement to determine the code
@@ -50,8 +50,11 @@ void * f (int code, void * mem, void * data)
          * Free the memory
          */
         case 2:
-            if (mem) 
+            if (mem)
+            {
+                printf("\n");
                 free(mem);
+            } 
             break;
 
         /*
@@ -185,15 +188,18 @@ void * f (int code, void * mem, void * data)
                     {
                         // Int Print
                         case 3:
-                            (int *) intAddress = mem + (char) i
-                            int containedInt - *intAddress;
+                            ;
+                            int * intAddress;
+                            intAddress = mem + (char) i;
+                            int containedInt = *intAddress;
                             printf("%d", containedInt);
-                            i = i + 4
+                            i = i + 4;
                             break;
 
                         // String Print
                         case 4:
-                            (char *) charAddress;
+                            ;
+                            char * charAddress;
                             charAddress = mem + (char) i;
                             char containedChar = *charAddress;
                             while (containedChar != 0)
@@ -201,16 +207,19 @@ void * f (int code, void * mem, void * data)
                                 printf("%c", containedChar);
                                 i = i + 1;
                                 charAddress = mem + (char) i;
+                                containedChar = *charAddress;
                             }
                             i = i + 1;
                             break;
 
                         // Float Print
                         case 5:
-                            (float *) fAddress = mem + (char) i
-                            float containedFloat - *fAddress;
+                            ;
+                            float * fAddress;
+                            fAddress = mem + (char) i;
+                            float containedFloat = *fAddress;
                             printf("%f", containedFloat);
-                            i = i + 4
+                            i = i + 4;
                             break;
                     }
                 }
