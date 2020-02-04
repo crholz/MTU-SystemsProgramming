@@ -215,12 +215,13 @@ void * f (int code, void * mem, void * data)
                             float * fAddress;
                             fAddress = mem + (char) i;
                             float containedFloat = *fAddress;
-                            printf("%.1f", containedFloat);
+                            printf("%f", containedFloat);
                             i = i + 4;
                             break;
                     }
                 }
             }
+            printf("\n");
             break;
     }
 
