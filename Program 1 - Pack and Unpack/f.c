@@ -30,7 +30,6 @@ void * f (int code, void * mem, void * data)
             {
                 // Allocate z_data bytes to memory
                 mem = (char*) malloc(z_data * sizeof(char));
-
                 // Create an integer pointer to allocate the first two bytes
                 short defaultLoc = 2;
                 short * locPoint;
@@ -46,6 +45,9 @@ void * f (int code, void * mem, void * data)
             else if (z_data == 0)
                 return 0;
 
+            else if (mem)
+                return mem;
+
             break;
 
         /*
@@ -56,7 +58,7 @@ void * f (int code, void * mem, void * data)
             if (mem)
             {
                 free(mem);
-            } 
+            }
             break;
 
         /*
@@ -209,13 +211,13 @@ void * f (int code, void * mem, void * data)
                             intAddress = mem + (char) i;
 
                             // Flip the bits using chars
-                            char * flipped = (char *) &containedInt;
-                            char * given = (char *) intAddress;
+                            char * iflipped = (char *) &containedInt;
+                            char * igiven = (char *) intAddress;
 
-                            flipped[0] = given[3];
-                            flipped[1] = given[2];
-                            flipped[2] = given[1];
-                            flipped[3] = given[0];
+                            iflipped[0] = igiven[3];
+                            iflipped[1] = igiven[2];
+                            iflipped[2] = igiven[1];
+                            iflipped[3] = igiven[0];
 
                             printf("%d", containedInt);
                             i = i + 4;
@@ -242,17 +244,18 @@ void * f (int code, void * mem, void * data)
                             ;
                             float * fAddress;
                             float containedFloat;
+                            
+                            fAddress = mem + (char) i;
 
                             // Flip the bits using chars
-                            char * flipped = (char *) &containedFloat;
-                            char * given = (char *) intAddress;
+                            char * fflipped = (char *) &containedFloat;
+                            char * fgiven = (char *) fAddress;
 
-                            flipped[0] = given[3];
-                            flipped[1] = given[2];
-                            flipped[2] = given[1];
-                            flipped[3] = given[0];
+                            fflipped[0] = fgiven[3];
+                            fflipped[1] = fgiven[2];
+                            fflipped[2] = fgiven[1];
+                            fflipped[3] = fgiven[0];
 
-                            fAddress = mem + (char) i;
                             printf("%f", containedFloat);
                             i = i + 4;
                             break;
