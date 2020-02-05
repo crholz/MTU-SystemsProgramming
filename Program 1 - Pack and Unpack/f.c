@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <arpa/inet.h>
 
 #define  F_first        1   /* This is the first call to the function. */
 #define  F_last         2   /* This is the last call to the function. Free the memory area. */
@@ -8,6 +9,8 @@
 #define  F_data_char    4   /* Void * argument points to character string. */
 #define  F_data_float   5   /* Void * argument points to a float data value. */
 #define  F_print        6   /* Print the accumulated values. */
+
+// Corbin Holz
 
 void * f (int code, void * mem, void * data)
 {
@@ -66,6 +69,7 @@ void * f (int code, void * mem, void * data)
                 int * iPoint;
                 iPoint = data;
                 int setter = *iPoint;
+                setter = htonl(setter);
 
                 // Find Current location of the string
                 short *currentAdd;
@@ -136,8 +140,22 @@ void * f (int code, void * mem, void * data)
             {
                 // Get the float value of the data pointer
                 float * fPoint;
+
+                // Get the Pointer
                 fPoint = data;
-                float setter = *fPoint;
+                float temp = *fPoint;
+
+                float setter;
+
+                // Flip the bits using chars
+                char * flipped = (char *) &setter;
+                char * given = (char *) fPoint;
+
+                flipped[0] = given[3];
+                flipped[1] = given[2];
+                flipped[2] = given[1];
+                flipped[3] = given[0];
+
 
                 // Find Current location of the string
                 short *currentAdd;
