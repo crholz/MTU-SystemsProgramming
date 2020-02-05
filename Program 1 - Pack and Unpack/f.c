@@ -205,8 +205,18 @@ void * f (int code, void * mem, void * data)
                         case 3:
                             ;
                             int * intAddress;
+                            int containedInt;
                             intAddress = mem + (char) i;
-                            int containedInt = *intAddress;
+
+                            // Flip the bits using chars
+                            char * flipped = (char *) &containedInt;
+                            char * given = (char *) intAddress;
+
+                            flipped[0] = given[3];
+                            flipped[1] = given[2];
+                            flipped[2] = given[1];
+                            flipped[3] = given[0];
+
                             printf("%d", containedInt);
                             i = i + 4;
                             break;
@@ -231,8 +241,18 @@ void * f (int code, void * mem, void * data)
                         case 5:
                             ;
                             float * fAddress;
+                            float containedFloat;
+
+                            // Flip the bits using chars
+                            char * flipped = (char *) &containedFloat;
+                            char * given = (char *) intAddress;
+
+                            flipped[0] = given[3];
+                            flipped[1] = given[2];
+                            flipped[2] = given[1];
+                            flipped[3] = given[0];
+
                             fAddress = mem + (char) i;
-                            float containedFloat = *fAddress;
                             printf("%f", containedFloat);
                             i = i + 4;
                             break;
