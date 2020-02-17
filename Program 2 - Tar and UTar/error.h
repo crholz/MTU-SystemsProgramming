@@ -19,7 +19,7 @@ int error(char* myError)
 void argError(int argCount, int argRequirements)
 {
 	if (argCount < argRequirements)
-		error("Not enough arguments!\n");	
+		error("Error: Not enough arguments!\n");	
 }
 
 // argType
@@ -35,7 +35,7 @@ void argType(char* argument, int numArgs)
 		argError(numArgs, 4);
 
 	else
-		error("Argument type not defined.\n");
+		error("Error: Argument type not defined.\n");
 }
 
 // fileExists
@@ -49,4 +49,25 @@ int fileExists (int fdIn)
 
 	
 	return 1;
+}
+
+// writeError
+// Check if writing was successful
+// @int writeIn passed in how many bytes written
+void writeError(int writeIn)
+{
+	if (writeIn == 0)
+		error("Error: End of file.\n");
+
+	else if (writeIn == -1)
+		error("Error: Could not write to file.\n");
+}
+
+// writeError
+// Check if closing was successful
+// @int writeIn passed in how many bytes written
+void closeError(int closeIn)
+{
+	if (closeIn == -1)
+		error("Error: Could not close the file.\n");
 }

@@ -12,6 +12,25 @@
 // Not an archive file
 
 
+// init
+// Initialize the values of hdr
+// @passedHDR, the header
+void init(hdr* passedHDR)
+{
+	// Initialize passedHDR
+	passedHDR->magic = 0x63746172;
+	passedHDR->eop = sizeof(passedHDR);
+	passedHDR->block_count = 0;
+	for (int i = 0; i < 8; i++) 
+	{
+		passedHDR->file_size[i] = 0;
+		passedHDR->deleted[i] = 0;
+		passedHDR->file_name[i] = 0;
+	}
+
+	passedHDR->next = 0;
+}
+
 int main(int argc, char **argv)
 {
 	// Check for sufficient number of arguments
@@ -25,7 +44,7 @@ int main(int argc, char **argv)
 	int i, fd, archFile;
 	hdr myHeader;
 
-	// Open the archive file
+	// Attempt to Open the Archive File
 	fd = open(argv[2], O_RDWR, 0644);
 	read(fd, &myHeader, sizeof(myHeader));
 
@@ -35,14 +54,24 @@ int main(int argc, char **argv)
 	{
 		// Throw error if the file exists
 		if (fileExists(fd))
-			error("File exists!\n")
+			error("Error: File exists!\n");
 
 		// Create the file
 		else
 		{
-			// Create the header
-			char instBuff[256];	
+			// Create the file
+			fd = open(argv[2],  O_RDWR| O_CREAT, 0644);
 
+			if (fd == -1)
+				error("Error: Could not create new file!\n");
+
+			init(&myHeader);
+
+			// Write the header
+			writeError(write(fd,  &myHeader, sizeof(myHeader)));
+
+			// Close the file
+			closeError(close(fd));
 		}
 		
 	}
