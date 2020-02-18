@@ -18,10 +18,11 @@
 void init(hdr* passedHDR)
 {
 	// Initialize passedHDR
+	int i;
 	passedHDR->magic = 0x63746172;
 	passedHDR->eop = sizeof(passedHDR);
 	passedHDR->block_count = 0;
-	for (int i = 0; i < 8; i++) 
+	for (i = 0; i < 8; i++) 
 	{
 		passedHDR->file_size[i] = 0;
 		passedHDR->deleted[i] = 0;
@@ -87,8 +88,6 @@ int main(int argc, char **argv)
 		// If the file doesn't exist, create it
 		if (fd == -1)
 		{
-			// Close current file
-			closeError(close(fd));
 			fd = open(argv[2],  O_RDWR| O_CREAT, 0644);
 
 			if (fd == -1)
@@ -112,13 +111,50 @@ int main(int argc, char **argv)
 
 		// Start appending files
 		// Append while there are still files left
-
+		i = 3;
 		while (i < argc)
 		{
 			// Less than 8 files
 			if (myHeader.block_count < 8)
 			{
-				
+				// Attempt to open the file
+				int newFD = open(argv[i], O_RDONLY);
+				readError(newFD);
+
+				// Check if file is already in archive
+				inArchiveError(argv[i], &myHeader, fd);
+
+				myHeader.file_name[myHeader.block_count] = myHeader.eop + 1;
+				myHeader.file_size[myHeader.block_count] = lseek(newFD, 0, SEEK_END);
+
+				// Go to end of file to append
+				lseek(fd, 0, SEEK_END);	
+
+				//File Name (predecessed by a short)
+				short nameSize = strlen(argv[i]);
+
+				// write the namesize
+				char* nameBuff[2];
+				write(fd, nameBuff, nameSize);
+
+				// Write the file name
+				write(fd, &nameSize, sizeof(nameSize));
+
+				char* readBuffer[1024];
+				// Start Reading the file from beggining
+				lseek(newFD, 0, SEEK_SET);
+				int bytes_read;
+				do {
+					bytes_read = read(newFD, readBuffer, 1024);
+					write(fd, readBuffer, bytes_read);
+				}	while(bytes_read != 0);
+
+				closeError(close(newFD));
+
+				myHeader.block_count = myHeader.block_count + 1;
+				myHeader.eop = lseek(fd, 0, SEEK_END);
+				lseek(fd, 0, SEEK_SET);
+				write(fd, &myHeader, sizeof(hdr));
 			}
 
 			// More than 8 files

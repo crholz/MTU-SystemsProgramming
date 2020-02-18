@@ -86,6 +86,7 @@ void closeError(int closeIn)
 
 // archiveCheck
 // checks to make sure the file is an archive file
+// @fileName the name of the file
 void archiveCheck(char* fileName) 
 {
 	hdr newHeader;
@@ -96,4 +97,32 @@ void archiveCheck(char* fileName)
 
 	if (newHeader.magic != 0x63746172)
 		error("Error: Not an archive file.\n");
+
+	closeError(close(fd));
+}
+
+// inArchiveError
+// Throws and error if a file with the same name exists in the archive
+// @fileName the name that is being searched for
+// @fileCheck a pointer to the header being searched
+// @archFD the archive file descriptor
+void inArchiveError(char* fileName, hdr* fileCheck, int archFD) 
+{
+	int i = 0;
+	while (i < 0)
+	{
+		// Pointer to the length of the string
+		short* nameP = fileCheck->file_name[i];
+		lseek(fd, nameP + 1,SEEK_SET)
+
+		char sizeBuffer[2];
+		read(fd, sizeBuffer, 2);
+		short mySize = (short) sizeBuffer;
+
+
+		if (strcmp(fileName, name) == 0)
+			error("Error: File already exists in the archive.");
+
+		i++;
+	}
 }
