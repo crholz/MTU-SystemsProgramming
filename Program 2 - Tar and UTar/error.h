@@ -109,19 +109,31 @@ void archiveCheck(char* fileName)
 void inArchiveError(char* fileName, hdr* fileCheck, int archFD) 
 {
 	int i = 0;
-	while (i < 0)
+	while (i < 8)
 	{
-		// Pointer to the length of the string
-		short* nameP = fileCheck->file_name[i];
-		lseek(fd, nameP + 1,SEEK_SET)
+		if (fileCheck->file_name[i] != 0)
+		{
+			lseek(archFD, fileCheck->file_name[i], SEEK_SET);
 
-		char sizeBuffer[2];
-		read(fd, sizeBuffer, 2);
-		short mySize = (short) sizeBuffer;
+			char sizeBuffer[2];
+			read(archFD, sizeBuffer, 2);
+			short mySize = (short) *sizeBuffer;
+
+			char nameBuffer[mySize];
 
 
-		if (strcmp(fileName, name) == 0)
-			error("Error: File already exists in the archive.");
+			if (mySize != 0)
+			{
+				char nameBuffer[mySize];
+				read(archFD, nameBuffer, mySize);
+			}
+
+			printf("%d %s\n", mySize, nameBuffer);
+
+
+			if (strcmp(fileName, nameBuffer) == 0)
+				error("Error: File already exists in the archive.");
+		}
 
 		i++;
 	}
