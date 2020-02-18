@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 	hdr myHeader;
 
 	// Attempt to Open the Archive File
-	fd = open(argv[2], O_RDWR, 0644);
+	fd = open(argv[2], O_RDONLY, 0644);
 	read(fd, &myHeader, sizeof(myHeader));
 
 	// Determine Operation
@@ -59,6 +59,9 @@ int main(int argc, char **argv)
 		// Create the file
 		else
 		{
+			// Close current file
+			closeError(close(fd));
+			
 			// Create the file
 			fd = open(argv[2],  O_RDWR| O_CREAT, 0644);
 
@@ -78,9 +81,55 @@ int main(int argc, char **argv)
 
 
 	// Append File
+	// File might exist
 	else if (strcmp(argv[1], "-a") == 0 && argc > 3)
 	{
-		exit(1);
+		// If the file doesn't exist, create it
+		if (fd == -1)
+		{
+			// Close current file
+			closeError(close(fd));
+			fd = open(argv[2],  O_RDWR| O_CREAT, 0644);
+
+			if (fd == -1)
+				error("Error: Could not access file!\n");
+
+			init(&myHeader);
+
+			// Write the header
+			writeError(write(fd,  &myHeader, sizeof(myHeader)));
+		}
+
+		else
+		{
+			// Close current file
+			closeError(close(fd));
+			fd = open(argv[2],  O_RDWR, 0644);
+		}
+		
+
+		archiveCheck(argv[2]);
+
+		// Start appending files
+		// Append while there are still files left
+
+		while (i < argc)
+		{
+			// Less than 8 files
+			if (myHeader.block_count < 8)
+			{
+				
+			}
+
+			// More than 8 files
+			else
+			{
+				/* code */
+			}
+
+			
+			i++;
+		}
 	}
 
 	// Delete File

@@ -1,3 +1,6 @@
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -51,6 +54,15 @@ int fileExists (int fdIn)
 	return 1;
 }
 
+// readError
+// Check if reading was successful
+// @int readIn passed in how many bytes written
+void readError(int readIn)
+{
+	if (readIn == -1)
+		error("Error: Could not read from file.\n");
+}
+
 // writeError
 // Check if writing was successful
 // @int writeIn passed in how many bytes written
@@ -63,11 +75,25 @@ void writeError(int writeIn)
 		error("Error: Could not write to file.\n");
 }
 
-// writeError
+// closeError
 // Check if closing was successful
 // @int writeIn passed in how many bytes written
 void closeError(int closeIn)
 {
 	if (closeIn == -1)
 		error("Error: Could not close the file.\n");
+}
+
+// archiveCheck
+// checks to make sure the file is an archive file
+void archiveCheck(char* fileName) 
+{
+	hdr newHeader;
+	int fd = open(fileName, O_RDONLY);
+	
+	int rdError = read(fd, &newHeader, sizeof(newHeader));
+	readError(rdError);
+
+	if (newHeader.magic != 0x63746172)
+		error("Error: Not an archive file.\n");
 }
