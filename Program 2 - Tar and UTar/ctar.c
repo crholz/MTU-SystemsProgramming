@@ -131,16 +131,20 @@ int main(int argc, char **argv)
 				lseek(fd, 0, SEEK_END);	
 
 				//File Name (predecessed by a short)
-				short nameSize = strlen(argv[i]);
+				short* nameSize;
+				*nameSize = strlen(argv[i]);
 
 				// write the namesize
-				char nameBuff[2];
-				write(fd, &nameBuff, nameSize);
+				printf("This is the value ->");
+				writeError(write(1, &nameSize, sizeof(short)));
+				printf("\n");
+				exit(1);				
 
-				printf("Size of name: %d\n", nameSize);
+
+				writeError(write(fd, argv[i], *nameSize));
 
 				// Write the file name
-				write(fd, &nameSize, sizeof(nameSize));
+				//write(fd, &nameSize, sizeof(nameSize));
 
 				char* readBuffer[1024];
 				// Start Reading the file from beggining

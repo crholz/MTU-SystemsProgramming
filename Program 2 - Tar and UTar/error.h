@@ -108,6 +108,9 @@ void archiveCheck(char* fileName)
 // @archFD the archive file descriptor
 void inArchiveError(char* fileName, hdr* fileCheck, int archFD) 
 {
+	if (fileCheck -> block_count == 0)
+		return;
+	
 	int i = 0;
 	while (i < 8)
 	{
@@ -115,20 +118,21 @@ void inArchiveError(char* fileName, hdr* fileCheck, int archFD)
 		{
 			lseek(archFD, fileCheck->file_name[i], SEEK_SET);
 
-			char sizeBuffer[2];
-			read(archFD, sizeBuffer, 2);
-			short mySize = (short) *sizeBuffer;
+			char nameSize[2];
+			read(archFD, nameSize, 2);
 
-			char nameBuffer[mySize];
+			short* mySize = nameSize;
+
+			char nameBuffer[*mySize];
 
 
-			if (mySize != 0)
+			if (*mySize != 0)
 			{
-				char nameBuffer[mySize];
-				read(archFD, nameBuffer, mySize);
+				char nameBuffer[*mySize];
+				read(archFD, nameBuffer, *mySize);
 			}
 
-			printf("%d %s\n", mySize, nameBuffer);
+			printf("%d %s\n", *mySize, nameBuffer);
 
 
 			if (strcmp(fileName, nameBuffer) == 0)
