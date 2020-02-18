@@ -20,7 +20,7 @@ void init(hdr* passedHDR)
 	// Initialize passedHDR
 	int i;
 	passedHDR->magic = 0x63746172;
-	passedHDR->eop = sizeof(passedHDR);
+	passedHDR->eop = sizeof(hdr);
 	passedHDR->block_count = 0;
 	for (i = 0; i < 8; i++) 
 	{
@@ -117,31 +117,32 @@ int main(int argc, char **argv)
 			// Less than 8 files
 			if (myHeader.block_count < 8)
 			{
+
 				// Check if file is already in archive
 				inArchiveError(argv[i], &myHeader, fd);
-				
+
+				// Go to end of file to append
+				lseek(fd, 0, SEEK_END);
+
 				// Attempt to open the file
 				int newFD = open(argv[i], O_RDONLY);
 				readError(newFD);
-
+				
 				myHeader.file_name[myHeader.block_count] = myHeader.eop + 1;
 				myHeader.file_size[myHeader.block_count] = lseek(newFD, 0, SEEK_END);
 
-				// Go to end of file to append
-				lseek(fd, 0, SEEK_END);	
 
 				//File Name (predecessed by a short)
-				short* nameSize;
-				*nameSize = strlen(argv[i]);
+				short nameSize = strlen(argv[i]);
+
+				printf("Name Size: %d,  Block Count: %d\n", nameSize, myHeader.block_count);
 
 				// write the namesize
-				printf("This is the value ->");
-				writeError(write(1, &nameSize, sizeof(short)));
-				printf("\n");
-				exit(1);				
+				writeError(write(fd, &nameSize, sizeof(nameSize)));
 
+				lseek(fd, 0, SEEK_END);
 
-				writeError(write(fd, argv[i], *nameSize));
+				writeError(write(fd, argv[i], nameSize));
 
 				// Write the file name
 				//write(fd, &nameSize, sizeof(nameSize));
@@ -160,7 +161,7 @@ int main(int argc, char **argv)
 				myHeader.block_count = myHeader.block_count + 1;
 				myHeader.eop = lseek(fd, 0, SEEK_END);
 				lseek(fd, 0, SEEK_SET);
-				write(fd, &myHeader, sizeof(hdr));
+				write(fd, &myHeader, sizeof(myHeader));
 			}
 
 			// More than 8 files

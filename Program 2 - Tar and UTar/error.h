@@ -116,23 +116,20 @@ void inArchiveError(char* fileName, hdr* fileCheck, int archFD)
 	{
 		if (fileCheck->file_name[i] != 0)
 		{
-			lseek(archFD, fileCheck->file_name[i], SEEK_SET);
+			lseek(archFD, fileCheck->file_name[i] - 1, SEEK_SET);
 
-			char nameSize[2];
-			read(archFD, nameSize, 2);
+			printf("File Pointer: %d\n", fileCheck->file_name[i] -1);
 
-			short* mySize = nameSize;
+			char readBuffer[2];
+			int bytes = read(archFD, readBuffer, sizeof(short));
+			short mySize = (short) *(readBuffer);
 
-			char nameBuffer[*mySize];
+			printf("My Size: %d  Char Size: %s  Read: %d\n", mySize, readBuffer, bytes);
 
+			char nameBuffer[mySize];	
+			read(archFD, nameBuffer, mySize);
 
-			if (*mySize != 0)
-			{
-				char nameBuffer[*mySize];
-				read(archFD, nameBuffer, *mySize);
-			}
-
-			printf("%d %s\n", *mySize, nameBuffer);
+			printf("MySize: %d Buffer: %s\n", mySize, nameBuffer);
 
 
 			if (strcmp(fileName, nameBuffer) == 0)
