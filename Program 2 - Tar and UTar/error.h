@@ -110,30 +110,26 @@ void inArchiveError(char* fileName, hdr* fileCheck, int archFD)
 {
 	if (fileCheck -> block_count == 0)
 		return;
+
 	
 	int i = 0;
 	while (i < 8)
 	{
 		if (fileCheck->file_name[i] != 0)
 		{
-			lseek(archFD, fileCheck->file_name[i] - 1, SEEK_SET);
+			lseek(archFD, fileCheck->file_name[i], SEEK_SET);
 
-			printf("File Pointer: %d\n", fileCheck->file_name[i] -1);
 
 			char readBuffer[2];
 			int bytes = read(archFD, readBuffer, sizeof(short));
 			short mySize = (short) *(readBuffer);
 
-			printf("My Size: %d  Char Size: %s  Read: %d\n", mySize, readBuffer, bytes);
 
-			char nameBuffer[mySize];	
+			char nameBuffer[60] = "";	
 			read(archFD, nameBuffer, mySize);
 
-			printf("MySize: %d Buffer: %s\n", mySize, nameBuffer);
-
-
 			if (strcmp(fileName, nameBuffer) == 0)
-				error("Error: File already exists in the archive.");
+				error("Error: File already exists in the archive.\n");
 		}
 
 		i++;

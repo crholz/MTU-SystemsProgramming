@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 			// Less than 8 files
 			if (myHeader.block_count < 8)
 			{
-
+				printf("%s", argv[i]);
 				// Check if file is already in archive
 				inArchiveError(argv[i], &myHeader, fd);
 
@@ -128,14 +128,12 @@ int main(int argc, char **argv)
 				int newFD = open(argv[i], O_RDONLY);
 				readError(newFD);
 				
-				myHeader.file_name[myHeader.block_count] = myHeader.eop + 1;
+				myHeader.file_name[myHeader.block_count] = myHeader.eop;
 				myHeader.file_size[myHeader.block_count] = lseek(newFD, 0, SEEK_END);
 
 
 				//File Name (predecessed by a short)
 				short nameSize = strlen(argv[i]);
-
-				printf("Name Size: %d,  Block Count: %d\n", nameSize, myHeader.block_count);
 
 				// write the namesize
 				writeError(write(fd, &nameSize, sizeof(nameSize)));
@@ -144,8 +142,6 @@ int main(int argc, char **argv)
 
 				writeError(write(fd, argv[i], nameSize));
 
-				// Write the file name
-				//write(fd, &nameSize, sizeof(nameSize));
 
 				char* readBuffer[1024];
 				// Start Reading the file from beggining
