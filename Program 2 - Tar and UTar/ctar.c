@@ -229,7 +229,6 @@ int main(int argc, char **argv)
 		closeError(close(fd));
 		fd = open(argv[2],  O_RDWR, 0644);
 
-		printf("Running Deletion\n");
 
 		init(&myHeader);
 		lseek(fd, 0, SEEK_SET);

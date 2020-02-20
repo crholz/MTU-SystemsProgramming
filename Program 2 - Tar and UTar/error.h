@@ -95,7 +95,7 @@ void archiveCheck(char* fileName)
 	int rdError = read(fd, &newHeader, sizeof(newHeader));
 	readError(rdError);
 
-	if (newHeader.magic != 0x63746172)
+	if (newHeader.magic != 0x63746172 && newHeader.eop != lseek(fd, 0, SEEK_END))
 		error("Error: Not an archive file.\n");
 
 	closeError(close(fd));
@@ -126,14 +126,12 @@ int inArchiveError(char* fileName, hdr* fileCheck, int archFD, int start, int de
 			char nameBuffer[60] = "";	
 			read(archFD, nameBuffer, mySize);
 
-			printf("%s\n", nameBuffer);
 
 			if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 0)
 				error("Error: File already exists in the archive.\n");
 
 			else if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 1 && fileCheck->deleted[i] != 1)
 			{
-				printf("Deleted\n");
 				if (start != 0)
 				{
 					lseek(archFD, start, SEEK_SET);
@@ -149,7 +147,6 @@ int inArchiveError(char* fileName, hdr* fileCheck, int archFD, int start, int de
 				}
 				else
 				{
-					printf("Start append %d\n", fileCheck->magic);
 					lseek(archFD, 0, SEEK_SET);
 
 					hdr myDelete;
@@ -159,10 +156,11 @@ int inArchiveError(char* fileName, hdr* fileCheck, int archFD, int start, int de
 					lseek(archFD, 0, SEEK_SET);
 					myDelete.deleted[i] = 1;
 					writeError(write(archFD, &myDelete, sizeof(myDelete)));
-					
+
 					return 1;
 				}
 			}
+			
 		}
 
 		i++;
