@@ -106,11 +106,9 @@ void archiveCheck(char* fileName)
 // @fileName the name that is being searched for
 // @fileCheck a pointer to the header being searched
 // @archFD the archive file descriptor
-void inArchiveError(char* fileName, hdr* fileCheck, int archFD) 
+// @deletionMark 1 if looking for a deletion
+int inArchiveError(char* fileName, hdr* fileCheck, int archFD, int start, int deletionMark) 
 {
-	if (fileCheck -> block_count == 0)
-		return;
-
 	
 	int i = 0;
 	while (i < 8)
@@ -128,10 +126,58 @@ void inArchiveError(char* fileName, hdr* fileCheck, int archFD)
 			char nameBuffer[60] = "";	
 			read(archFD, nameBuffer, mySize);
 
-			if (strcmp(fileName, nameBuffer) == 0)
+			printf("%s\n", nameBuffer);
+
+			if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 0)
 				error("Error: File already exists in the archive.\n");
+
+			else if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 1 && fileCheck->deleted[i] != 1)
+			{
+				printf("Deleted\n");
+				if (start != 0)
+				{
+					lseek(archFD, start, SEEK_SET);
+
+					hdr myDelete;
+					init(&myDelete);
+
+					readError(read(archFD, &myDelete, sizeof(myDelete)));
+					lseek(archFD, start, SEEK_SET);
+					myDelete.deleted[i] = 1;
+					writeError(write(archFD, &myDelete, sizeof(myDelete)));
+					return 1;
+				}
+				else
+				{
+					printf("Start append %d\n", fileCheck->magic);
+					lseek(archFD, 0, SEEK_SET);
+
+					hdr myDelete;
+					init(&myDelete);
+
+					readError(read(archFD, &myDelete, sizeof(myDelete)));
+					lseek(archFD, 0, SEEK_SET);
+					myDelete.deleted[i] = 1;
+					writeError(write(archFD, &myDelete, sizeof(myDelete)));
+					
+					return 1;
+				}
+			}
 		}
 
 		i++;
 	}
+
+	if (fileCheck->next > 0) 
+	{
+		lseek(archFD, fileCheck->next, SEEK_SET);
+
+		hdr newHead;
+		init(&newHead);
+		// Read the next header
+		read(archFD, &newHead, sizeof(newHead));
+
+		inArchiveError(fileName, &newHead, archFD, fileCheck->next, deletionMark);
+	}
+
 }
