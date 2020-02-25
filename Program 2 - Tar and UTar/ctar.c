@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 				myHeader.eop = lseek(fd, 0, SEEK_END);
 
 				myHeader.file_name[myHeader.block_count] = myHeader.eop;
-				myHeader.deleted[myHeader.block_count] = 1;
+				myHeader.deleted[myHeader.block_count] = 0;
 				myHeader.file_size[myHeader.block_count] = lseek(newFD, 0, SEEK_END);
 
 

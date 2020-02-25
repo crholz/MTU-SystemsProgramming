@@ -1,6 +1,0 @@
-Test 1 Adding 1 File
-Test 2 Deleting a file from an empty archive
-Test 3 access a file that isn't an archive
-Test 4 Fill an archive
-Test 5 Delete and extract a full archive
-Test 6 Fill an archive with > 9 files 

@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     int i = 0;
     while (i <= myHeader.block_count)
     {
-        if (myHeader.deleted[i] != 0 && myHeader.file_name[i] != 0)
+        if (myHeader.deleted[i] != 1 && myHeader.file_name[i] != 0)
         {
             int file = myHeader.file_name[i];
             int size = myHeader.file_size[i];

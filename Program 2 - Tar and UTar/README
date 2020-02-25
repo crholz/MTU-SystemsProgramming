@@ -1,0 +1,8 @@
+Everything should work as expected. 
+
+Tests can be ran using commands ./utar and ./ctar
+
+./ctar [-a] appends files to the end of the next specified file
+./ctar [-d] deletes files from the archive
+
+./utar untars everything
