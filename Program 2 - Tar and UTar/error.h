@@ -8,7 +8,7 @@
 
 int error(char* myError)
 {
-	char buffer[256];
+	char buffer[512];
 	sprintf(buffer, "%s", myError);
 	write(1, buffer, strlen(buffer));
 	exit(1);
@@ -123,14 +123,14 @@ int inArchiveError(char* fileName, hdr* fileCheck, int archFD, int start, int de
 			short mySize = (short) *(readBuffer);
 
 
-			char nameBuffer[60] = "";	
+			char nameBuffer[512] = "";	
 			read(archFD, nameBuffer, mySize);
 
 
 			if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 0)
 				error("Error: File already exists in the archive.\n");
 
-			else if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 1 && fileCheck->deleted[i] != 1)
+			else if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 1 && fileCheck->deleted[i] != 0)
 			{
 				if (start != 0)
 				{
@@ -141,7 +141,7 @@ int inArchiveError(char* fileName, hdr* fileCheck, int archFD, int start, int de
 
 					readError(read(archFD, &myDelete, sizeof(myDelete)));
 					lseek(archFD, start, SEEK_SET);
-					myDelete.deleted[i] = 1;
+					myDelete.deleted[i] = 0;
 					writeError(write(archFD, &myDelete, sizeof(myDelete)));
 					return 1;
 				}
@@ -154,7 +154,7 @@ int inArchiveError(char* fileName, hdr* fileCheck, int archFD, int start, int de
 
 					readError(read(archFD, &myDelete, sizeof(myDelete)));
 					lseek(archFD, 0, SEEK_SET);
-					myDelete.deleted[i] = 1;
+					myDelete.deleted[i] = 0;
 					writeError(write(archFD, &myDelete, sizeof(myDelete)));
 
 					return 1;
