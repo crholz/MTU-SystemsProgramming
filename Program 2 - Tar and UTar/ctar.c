@@ -39,9 +39,8 @@ int main(int argc, char **argv)
 		// Create the file
 		else
 		{
-			// Close current file
-			closeError(close(fd));
-			
+			if (fd != -1)
+				closeError(close(fd));
 			// Create the file
 			fd = open(argv[2],  O_RDWR| O_CREAT, 0644);
 
