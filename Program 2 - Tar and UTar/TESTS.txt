@@ -1,0 +1,79 @@
+Test 1: Create an empty tar 
+[crholz@arch TESTS]$ ./ctar -a empty.tar
+
+Untar:
+
+Test 2: Create a tar with a single item
+[crholz@arch TESTS]$ ./ctar -a single.tar dog1.jpeg
+
+Untar: dog1.jpeg
+
+Test 3: Add the same file to the tar
+[crholz@arch TESTS]$ ./ctar -a single.tar dog1.jpeg
+Error: File already exists in the archive.
+
+Test 4: Add file to not an archive file
+[crholz@arch TESTS]$ ./ctar -a dog1.jpeg dog2.jpeg
+Error: Not an archive file.
+
+Test 5: Add a large amount of files to a tar
+[crholz@arch TESTS]$ ./ctar -a long.tar dog1.jpeg dog2.jpeg dog3.jfif dog4.jpeg dog5.jpeg dog6.jpeg dog7.jpeg dog8.jpeg dog9.jfif dog10.jfif dog11.jfif dog12.jfif dog13.jfif dog14.jfif dog15.jfif dog16.jfif dog17.jfif dog18.jfif
+
+Untar: dog1.jpeg dog2.jpeg dog3.jfif dog4.jpeg dog5.jpeg dog6.jpeg dog7.jpeg dog8.jpeg dog9.jfif dog10.jfif dog11.jfif dog12.jfif dog13.jfif dog14.jfif dog15.jfif dog16.jfif dog17.jfif dog18.jfif
+
+Test 6: Add duplicates at the beggining end and middle header
+[crholz@arch TESTS]$ ./ctar -a long.tar dog2.jpeg
+Error: File already exists in the archive.
+[crholz@arch TESTS]$ ./ctar -a long.tar dog10.jfif
+Error: File already exists in the archive.
+[crholz@arch TESTS]$ ./ctar -a long.tar dog18.jfif
+Error: File already exists in the archive.
+
+Test 7: Create a long file and delete a file in each section
+./ctar -a deleteTest.tar dog1.jpeg dog2.jpeg dog3.jfif dog4.jpeg dog5.jpeg dog6.jpeg dog7.jpeg dog8.jpeg dog9.jfif dog10.jfif dog11.jfif dog12.jfif dog13.jfif dog14.jfif dog15.jfif dog16.jfif dog17.jfif dog18.jfif
+[crholz@arch TESTS]$ ./ctar -d deleteTest.tar dog18.jfif
+[crholz@arch TESTS]$ ./ctar -d deleteTest.tar dog10.jfif
+[crholz@arch TESTS]$ ./ctar -d deleteTest.tar dog2.jpeg
+
+Untar: dog1.jpeg dog3.jfif dog4.jpeg dog5.jpeg dog6.jpeg dog7.jpeg dog8.jpeg dog9.jfif dog11.jfif dog12.jfif dog13.jfif dog14.jfif dog15.jfif dog16.jfif dog17.jfif
+
+Test 8: Create a long file, delete a file in each section, and add the files back
+[crholz@arch TESTS]$ ./ctar -a deleteAdd.tar dog1.jpeg dog2.jpeg dog3.jfif dog4.jpeg dog5.jpeg dog6.jpeg dog7.jpeg dog8.jpeg dog9.jfif dog10.jfif dog11.jfif dog12.jfif dog13.jfif dog14.jfif dog15.jfif dog16.jfif dog17.jfif dog18.jfif
+[crholz@arch TESTS]$ ./ctar -d deleteAdd.tar dog2.jpeg
+[crholz@arch TESTS]$ ./ctar -d deleteAdd.tar dog10.jfif
+[crholz@arch TESTS]$ ./ctar -d deleteAdd.tar dog18.jfif
+[crholz@arch TESTS]$ ./ctar -a deleteAdd.tar dog2.jpeg
+[crholz@arch TESTS]$ ./ctar -a deleteAdd.tar dog18.jfif
+[crholz@arch TESTS]$ ./ctar -a deleteAdd.tar dog10.jfif
+
+Untar: dog1.jpeg dog2.jpeg dog3.jfif dog4.jpeg dog5.jpeg dog6.jpeg dog7.jpeg dog8.jpeg dog9.jfif dog10.jfif dog11.jfif dog12.jfif dog13.jfif dog14.jfif dog15.jfif dog16.jfif dog17.jfif dog18.jfif
+
+Test 9: Remove a file that doesn't exist in the file
+[crholz@arch TESTS]$ ./ctar -d deleteTest.tar fake.file
+Error: File not in archive!
+
+Test 10: Not defined argument
+[crholz@arch TESTS]$ ./ctar -p deleteTest.tar fake.file
+Error: Argument type not defined.
+
+Test 11: Add Long file one file at a time
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog1.jpeg
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog2.jpeg
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog3.jfif
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog4.jpeg
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog5.jpeg
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog6.jpeg
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog7.jpeg
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog8.jpeg
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog9.jfif
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog10.jfif
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog11.jfif
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog12.jfif
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog13.jfif
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog14.jfif
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog15.jfif
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog16.jfif
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog17.jfif
+[crholz@arch TESTS]$ ./ctar -a longS.tar dog18.jfif
+
+Untar: dog1.jpeg dog2.jpeg dog3.jfif dog4.jpeg dog5.jpeg dog6.jpeg dog7.jpeg dog8.jpeg dog9.jfif dog10.jfif dog11.jfif dog12.jfif dog13.jfif dog14.jfif dog15.jfif dog16.jfif dog17.jfif dog18.jfif

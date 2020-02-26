@@ -123,7 +123,7 @@ int inArchiveError(char* fileName, hdr* fileCheck, int archFD, int start, int de
 			short mySize = (short) *(readBuffer);
 
 
-			char nameBuffer[512] = "";	
+			char nameBuffer[32767] = "";	
 			read(archFD, nameBuffer, mySize);
 
 			if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 0 && fileCheck->deleted[i] == 0)
