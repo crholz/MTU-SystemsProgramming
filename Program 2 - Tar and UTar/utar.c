@@ -58,10 +58,32 @@ int main(int argc, char **argv)
 
             inArch = open(nameBuffer,  O_RDWR| O_CREAT, 0644);
 
-            char fileBuffer[size];
+            char fileBuffer[1024];
 
-            readError(read(fd, fileBuffer, size));
-            writeError(write(inArch, fileBuffer, size));
+            int bytes_read;
+            int totalBytes = size;
+
+            while (totalBytes > 0)
+            {
+                if (totalBytes - 1024 > 0)
+                {
+                    bytes_read = read(fd, fileBuffer, 1024);
+                    readError(bytes_read);
+				    writeError(write(inArch, fileBuffer, bytes_read));
+                    totalBytes = totalBytes - 1024;
+                }
+
+                else
+                {
+                    bytes_read = read(fd, fileBuffer, totalBytes);
+                    readError(bytes_read);
+				    writeError(write(inArch, fileBuffer, bytes_read));
+                    totalBytes = totalBytes - totalBytes;
+                }
+                
+                
+            }
+
             closeError(close(inArch));
                 
             if (i == 7 && myHeader.next != 0)
