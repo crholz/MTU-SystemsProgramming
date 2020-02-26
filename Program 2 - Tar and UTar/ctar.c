@@ -39,9 +39,8 @@ int main(int argc, char **argv)
 		// Create the file
 		else
 		{
-			// Close current file
-			closeError(close(fd));
-			
+			if (fd != -1)
+				closeError(close(fd));
 			// Create the file
 			fd = open(argv[2],  O_RDWR| O_CREAT, 0644);
 
@@ -97,6 +96,7 @@ int main(int argc, char **argv)
 
 		while (i < argc)
 		{
+			
 			while (myHeader.next != 0) 
 			{
 				startLine = myHeader.next;
@@ -128,6 +128,7 @@ int main(int argc, char **argv)
 				myHeader.eop = lseek(fd, 0, SEEK_END);
 
 				myHeader.file_name[myHeader.block_count] = myHeader.eop;
+				myHeader.deleted[myHeader.block_count] = 0;
 				myHeader.file_size[myHeader.block_count] = lseek(newFD, 0, SEEK_END);
 
 
@@ -171,10 +172,13 @@ int main(int argc, char **argv)
 			{
 				// Update the next
 				myHeader.next = lseek(fd, 0, SEEK_END);
-				startLine = myHeader.next;
+				
 
-				lseek(fd, 0, SEEK_SET);
+				// UPDATING BEGINNING!
+				lseek(fd, startLine, SEEK_SET);
 				write(fd, &myHeader, sizeof(myHeader));
+
+				startLine = myHeader.next;
 
 				lseek(fd, 0, SEEK_END);
 
@@ -190,6 +194,7 @@ int main(int argc, char **argv)
 		{
 			// Read the first header
 			lseek(fd, 0, SEEK_SET);
+			init(&myHeader);
 			readError(read(fd, &myHeader, sizeof(myHeader)));
 
 			// Update EOP

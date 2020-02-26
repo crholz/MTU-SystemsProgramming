@@ -22,7 +22,7 @@ void init(hdr* passedHDR)
 	for (i = 0; i < 8; i++) 
 	{
 		passedHDR->file_size[i] = 0;
-		passedHDR->deleted[i] = 0;
+		passedHDR->deleted[i] = 1;
 		passedHDR->file_name[i] = 0;
 	}
 

@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 			short mySize = (short) *(readBuffer);
 
 
-			char nameBuffer[60] = "";	
+			char nameBuffer[100] = "";	
 			read(fd, nameBuffer, mySize);
 
             // See if the file exists first
