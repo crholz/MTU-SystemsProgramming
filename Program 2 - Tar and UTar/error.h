@@ -127,7 +127,7 @@ int inArchiveError(char* fileName, hdr* fileCheck, int archFD, int start, int de
 			read(archFD, nameBuffer, mySize);
 
 
-			if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 0)
+			if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 0 && fileCheck->deleted[i] == 0)
 				error("Error: File already exists in the archive.\n");
 
 			else if (strcmp(fileName, nameBuffer) == 0 && deletionMark == 1 && fileCheck->deleted[i] != 1)
