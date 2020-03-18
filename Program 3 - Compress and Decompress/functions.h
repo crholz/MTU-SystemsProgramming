@@ -104,6 +104,11 @@ int write_bit(int bit, int fd) {
 
     if (bit == 256) {
         // missing padding code here: if bit_count < 8 you must add enough 0s
+
+        if (bit_count == 0) {
+            return 0;
+        }
+
         while (bit_count < 8) {
             c = (c << 1) | 0;
             bit_count++;

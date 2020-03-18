@@ -115,7 +115,6 @@ int main(int argc, char **argv) {
         write(writeFile, &dict[i], 1);
     }
         
-
     while (byte_read != 0) {
         int indexOf = findInDict(byte_read, dict);
         // Find Repeats And Write
