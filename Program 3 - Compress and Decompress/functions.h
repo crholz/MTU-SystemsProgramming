@@ -24,14 +24,14 @@ int findInDict(unsigned char find, unsigned char * diction) {
 }
 
 // to return one byte from the standard input
-int read_byte() {
+int read_byte(int fd) {
     static int buf_count = 0;
     static int buf_index = 0;
     static char buf[256];
     char bufbuf[300];
     unsigned char c;
     if (buf_count == 0) { // nothing in buffer
-        buf_count = read(0, buf, sizeof(buf));
+        buf_count = read(fd, buf, sizeof(buf));
         buf_index = 0;
     }
 
@@ -78,14 +78,14 @@ int write_byte(int input, int fd) {
     return 0;
 }
 
-int read_bit() {
+int read_bit(int fd) {
     static unsigned char c;
     int temp_byte;
     static int bit_count = 0;
     int bit;
 
     if (bit_count == 0) {
-        temp_byte = read_byte();
+        temp_byte = read_byte(fd);
         bit_count = 8;
         c = (unsigned char) temp_byte;
         if (temp_byte == 256) {
@@ -98,23 +98,34 @@ int read_bit() {
     return bit;
 }
 
-int write_bit(int bit, int fd) {
+int write_bit(int bit, int fd, int encode) {
     static unsigned char c = 0;
     static int bit_count = 0;
 
+
     if (bit == 256) {
         // missing padding code here: if bit_count < 8 you must add enough 0s
-
-        if (bit_count == 0) {
-            return 0;
+        // Write exit code
+        if (encode == 1) {
+            write_bit(1, fd, 0);
+            write_bit(1, fd, 0);
+            write_bit(0, fd, 0);
+            write_bit(0, fd, 0);
+            write_bit(0, fd, 0);
+            write_bit(0, fd, 0);
+            write_bit(0, fd, 0);
+            write_bit(0, fd, 0);
         }
+        
+        if (bit_count == 0)
+            return 0;
 
         while (bit_count < 8) {
             c = (c << 1) | 0;
             bit_count++;
         }
 
-        write_byte(c, fd);
+        write(fd, &c, 1);
         bit_count = 0;
         return 0;
     }
@@ -122,8 +133,9 @@ int write_bit(int bit, int fd) {
     c = (c << 1) | (bit & 1);
     bit_count++;
 
+
     if (bit_count == 8) {
-        write_byte(c, fd);
+        write(fd, &c, 1);
         bit_count = 0;
     }
     
