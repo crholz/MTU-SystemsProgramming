@@ -1,0 +1,9 @@
+Test 1. Encode a text document, put output into new text document
+
+Test 2. Decode encoded text document, put output into a new text document
+
+Test 3. Use diff on the decoded text document with the original.
+
+Test 4-6. Repeat Tests 1-3 with different files.
+
+Test 7-9. Encode and decode canvas examples.

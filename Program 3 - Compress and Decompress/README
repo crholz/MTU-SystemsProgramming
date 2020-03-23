@@ -1,0 +1,6 @@
+Object:         Mine: 1.72      gzip: 3.0714
+Encode.c:       Mine: 1.1935    gzip: 2.846
+encode:         Mine: 1.6875    gzip: 2.8125
+
+decode.c:       Mine: 1.429     gzip: 2.913
+decode:         Mine: 1.763     gzip: 3.3333
