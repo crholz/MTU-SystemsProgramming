@@ -34,4 +34,18 @@ void Step1(char* fileName, int argumentNum, char** arguments) {
 int main(int argc, char** argv) {
     argError(argc, 2);
     Step1(argv[1], argc, argv);
+
+    // Step 2
+    if (fork() == 0) {
+        int childNumArgs = argc - 2;
+        char *childArgs[childNumArgs + 1];
+        char *envpArgs[] = {"newEnvironment", NULL};
+        for (int i = 0; i < childNumArgs; i++)
+            childArgs[i] = argv[i + 2];
+
+        childArgs[childNumArgs] = NULL;
+
+        execError(execve(childArgs[0], childArgs, envpArgs));
+        return;
+    }
 }

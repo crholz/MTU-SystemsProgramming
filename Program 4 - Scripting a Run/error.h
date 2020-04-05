@@ -47,7 +47,7 @@ void readError(int bytesRead) {
  * @filename name of file to open
  * @read if read == 1 then try to read
  */
-void foError(char* filename, int tryRead) {
+void foError(char* filename) {
     int fd;
     char * buf;
 
@@ -59,11 +59,23 @@ void foError(char* filename, int tryRead) {
     close(fd);
 }
 
-void wfError(char* filename) {
-    int fd = open(filename, O_RDONLY, 0644);
+// writeError
+// Check if writing was successful
+// @int writeIn passed in how many bytes written
+void writeError(int writeIn)
+{
+	if (writeIn == 0)
+		error("Error: End of file.\n");
 
-    if (fd > 0)
-        error("Error: File already exists.\n");
+	else if (writeIn == -1)
+		error("Error: Could not write to file.\n");
+}
 
-    close(fd);
+// execError
+// Check if exec
+// @int return value of exec
+void execError(int execNum)
+{
+	if (execNum)
+		error("Error: Exec failed.\n");
 }
