@@ -18,14 +18,14 @@ void Step1(char* fileName, int argumentNum, char** arguments) {
     
     for (int i = 2; i < argumentNum; i++) {
         for (int j = 0; j < strlen(arguments[i]); j++) {
-            write_byte(arguments[i][j], fd);
+            write_byte(arguments[i][j], fd, 0);
         }
         if (i != argumentNum - 1) {
-            write_byte(' ', fd);
+            write_byte(' ', fd, 0);
         }
     }
 
-    write_byte(256, fd);
+    write_byte(256, fd, 0);
 
     close(fd);
 
