@@ -59,6 +59,7 @@ void foError(char* filename) {
     close(fd);
 }
 
+
 // writeError
 // Check if writing was successful
 // @int writeIn passed in how many bytes written
