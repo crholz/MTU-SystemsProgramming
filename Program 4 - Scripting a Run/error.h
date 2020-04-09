@@ -65,10 +65,7 @@ void foError(char* filename) {
 // @int writeIn passed in how many bytes written
 void writeError(int writeIn)
 {
-	if (writeIn == 0)
-		error("Error: End of file.\n");
-
-	else if (writeIn == -1)
+	if (writeIn == -1)
 		error("Error: Could not write to file.\n");
 }
 
