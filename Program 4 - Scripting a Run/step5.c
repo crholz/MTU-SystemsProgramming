@@ -29,8 +29,9 @@ int main(int argc, char** argv) {
         int parentPID = getppid();
 
         close(transitPipe);
-        while(kill(parentPID, 0) == 0) {
-
+	int myKill = kill(parentPID, 0);
+        while(myKill == 0) {
+	    myKill = kill(parentPID, 0);
             transitPipe = open(pipeName, O_RDONLY, 0644);
 
             FD_ZERO(&childSet);

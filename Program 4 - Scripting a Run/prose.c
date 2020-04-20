@@ -21,7 +21,7 @@ void Step1(char* fileName, int argumentNum, char** arguments) {
     strcpy(errorName, fileName);
     strcat(errorName, fileExt);
 
-    foError(errorName);
+    
 
     int fd = open(finalName, O_RDWR | O_CREAT | O_APPEND, 0644);
     
@@ -42,7 +42,6 @@ void Step1(char* fileName, int argumentNum, char** arguments) {
 
 int main(int argc, char** argv) {
     argError(argc, 2);
-    Step1(argv[1], argc, argv);
 
     // Create pipes before forking
     int outPipe[2], errPipe[2], outBytesRead, errBytesRead;
@@ -56,10 +55,14 @@ int main(int argc, char** argv) {
     char finalName[256];
     strcpy(finalName, argv[1]);
     strcat(finalName, fileExt);
-    int outFD = open(finalName, O_RDWR | O_APPEND, 0644);
+
+    foError(finalName);
+    int outFD = open(finalName, O_RDWR | O_APPEND |O_CREAT, 0644);
 
     char errorName[256];
     char errorExt[] = ".stderr";
+
+    foError(errorName);
 
     strcpy(errorName, argv[1]);
     strcat(errorName, errorExt);
@@ -145,22 +148,19 @@ int main(int argc, char** argv) {
                 while (FD_ISSET(outPipe[0], &readfds)) {
                     numRead = read(outPipe[0], &outBuff, 256);
 
-                    if (numRead < 256)
-                        break;
-
                     // Write to Standard Out + outfile
                     for (int i = 0; i < numRead; i++) {
                         write_out(outBuff[i], outFD, 0);
                         write_stdout(outBuff[i], 1, 1);
                     }
+
+                    if (numRead < 256)
+                        break;
                 }
 
                 // Write to stderr(terminal translated) and file
                 while (FD_ISSET(errPipe[0], &readfds)) {
                     numRead = read(errPipe[0], &errBuff, 256);
-
-                    if (numRead < 256);
-                        break;
 
                     // Write to Standard Out + outfile
                     for (int i = 0; i < numRead; i++) {
@@ -168,12 +168,16 @@ int main(int argc, char** argv) {
                         write_stderr(errBuff[i], 2, 1);
                     }
                     
+                    if (numRead < 256);
+                        break;
                 }
 
                 write_out(256, outFD, 0);
                 write_stdout(256, 1, 1);
                 write_err(256, errFD, 0);
                 write_stderr(256, 2, 1);
+                close(outFD);
+                close(errFD);
                 return 0;
                 break;
         }
