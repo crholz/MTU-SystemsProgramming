@@ -2,6 +2,7 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <strings.h>
 #include <netdb.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -99,7 +100,7 @@ int main(int argc, char** argv) {
                             connections[i] = accept(listener, (struct sockaddr *)&s2, (socklen_t *) &length);
                             state[i] = 1;
                             position[i] = 0;
-                            write(connections[i], "log #: ", 6);
+                            write(connections[i], "log#: ", 5);
                             break;
                         }
                     }
@@ -115,7 +116,7 @@ int main(int argc, char** argv) {
 
                 for (int i = 0; i < 32; i++) {
                     if(connections[i] != -1 && FD_ISSET(connections[i], &readfds)) {
-                        readChar = read(connections[i], &buff, 128);
+                        readChar = read(connections[i], &buff, 512);
                         if (readChar == -1) 
                             error("Error: Could not read\n");
 
@@ -144,12 +145,14 @@ int main(int argc, char** argv) {
 
                         if (strcmp(comparison, "log\n") == 0 || strcmp(token, "log") == 0) {
                             write(connections[i], "#log: logging\n", 14);
-                            if(strcmp(comparison, "log\n") != 0) {
+                            if (readChar == 5)
+                                write(fd, "\n", 1);
+
+                            else if(strcmp(comparison, "log\n") != 0) {
                                 token = strtok(NULL, "\n");
                                 write(fd, token, strlen(token));
                                 char newLn = 10;
                                 write(fd, &newLn, 1);
-                                printf("Data Writter");
                             }
                                 
                         }
@@ -163,23 +166,25 @@ int main(int argc, char** argv) {
                             int readFrom = read(fd, &buff, 128);
                             write(connections[i], &buff, readFrom);
                             position[i] = 0 + readFrom;
+                            write(connections[i], "\n", 1);
                         }
                         
                         else if (strcmp(comparison, "\n") == 0) {
+                            write(connections[i], "#log: more\n", 11);
                             if (state[i] == 2) {
                                 lseek(fd, position[i], SEEK_SET);
                                 int readFrom = read(fd, &buff, 128);
                                 write(connections[i], &buff, readFrom);
                                 position[i] = position[i] + readFrom;
-                            }
-
-                            else
-                                write(connections[i], "#log: more\n", 11);
+                            }  
+                            write(connections[i], "\n", 1);
                         }
                             
 
                         else
                             write(connections[i], "#log: Command not recognized\n", 29);
+
+                        write(connections[i], "log#: ", 5);
                     
                     }
                 }
