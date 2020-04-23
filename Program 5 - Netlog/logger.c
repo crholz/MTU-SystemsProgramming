@@ -50,6 +50,7 @@ int main(int argc, char** argv) {
     
     fd_set readfds;
     struct timeval timeout;
+    struct timeval newTime;
     int maxVal;
     int selection;
     int readChar;
@@ -116,7 +117,7 @@ int main(int argc, char** argv) {
 
                 for (int i = 0; i < 32; i++) {
                     if(connections[i] != -1 && FD_ISSET(connections[i], &readfds)) {
-                        readChar = read(connections[i], &buff, 512);
+                        readChar = read(connections[i], &buff, 128);
                         if (readChar == -1) 
                             error("Error: Could not read\n");
 
@@ -151,6 +152,36 @@ int main(int argc, char** argv) {
                             else if(strcmp(comparison, "log\n") != 0) {
                                 token = strtok(NULL, "\n");
                                 write(fd, token, strlen(token));
+                                fd_set stillReading;
+                                int stillread = 0;
+                                int amountRead;
+                                fd_set myselect;
+                                while (stillread == 0) {
+                                    FD_ZERO(&myselect);
+                                    FD_SET(connections[i], &myselect);
+
+                                    newTime.tv_sec = 0;
+                                    newTime.tv_usec = 50;
+
+                                    int innSelect = select(connections[i] + 1, &myselect, NULL, NULL, &newTime);
+                                    switch (innSelect)
+                                    {
+                                    case 0:
+                                        stillread = 1;
+                                        break;
+                                    
+                                    default:
+                                        amountRead = read(connections[i], &buff, 128);
+                                        for (int i = 0; i < amountRead; i++)
+                                            if (buff[i] == '\r') {
+                                                buff[i] = buff[i + 1];
+                                            amountRead = amountRead - 1;
+                                        }
+                                        write(fd, &buff, amountRead);
+                                        break;
+                                    }
+                                }
+
                                 char newLn = 10;
                                 write(fd, &newLn, 1);
                             }

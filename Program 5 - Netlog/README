@@ -1,1 +1,12 @@
 All steps should work as intended including final program.
+
+Design Choices: The command status is sent before anything else.
+For example log#: log Hello There!
+	    #log: Logging
+            log#: list
+            #log: listing
+            Hello There!
+	    log#:
+
+Connection will time out after 5 minutes.
+	    
